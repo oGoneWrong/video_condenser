@@ -362,8 +362,64 @@ this pipeline so far has been a YouTube URL.
 - **YouTube-URL-only scope** — confirmed as a decision, not a gap; see its
   own entry above.
 
+### Known limitation — the map slide is pattern-matching, not a general "what's chart-worthy" decision
+
+**Context:** `map_slide.py`'s trigger is a single hardcoded keyword match
+(`MAP_METRIC["keyword"] = "burden"`) against NUMBERS & CONTEXT labels, and
+its entity recognition is a hardcoded list of seven Taiwanese cities
+(`CITIES` in `map_slide.py`), matched by literal substring - not general
+geo-entity recognition. It works, and degrades safely (no map slide at all,
+documented in `ARCHITECTURE.md`) for any video that doesn't happen to
+mention one of those seven names. But calling this "the pipeline decides
+what's worth mapping" overstates what's actually happening: it decides
+what's worth mapping *for this one video*, because it was built by reading
+this one video's output backward into a config block, not by reasoning
+about the general problem.
+
+**Why this is worth stating plainly rather than leaving as an implicit
+gap:** the rest of the pipeline earns real credit for using an LLM to make
+judgment calls - fact-grouping, chart-vs-context detection by shared unit
+(`slide_planner.py`). The map slide doesn't participate in that reasoning
+at all, so it would be dishonest to let it ride on the same
+"Gemini-assisted" framing as the rest of Step 3.5's work.
+
+**What a general version would actually need** (not built - this is the
+refinement gap, spelled out rather than left vague):
+1. **A visualization-type classifier, not just a grouping call.**
+   `slide_planner.py` already asks Gemini to group facts and detect
+   shared-unit chart candidates in one call, over the same NUMBERS &
+   CONTEXT data `map_slide.py` re-scans separately with regex. The natural
+   fix is one more field per line in that *same* call: is this line
+   `bar_chart` (shares a unit with others, no natural entity axis),
+   `geo_map` (values are tied to named places), `time_series` (values are
+   tied to points in time - not supported at all today), or `plain_stat`
+   (a single number, no natural grouping) - replacing map_slide.py's
+   keyword match and build_video.py's separate shared-unit detection with
+   one consistent decision instead of two independent heuristics.
+2. **Real geo-entity recognition, not a fixed city list.** Even with a
+   correct `geo_map` classification, rendering still needs actual boundary
+   data for whatever places got named - `CITIES` only works because
+   `render/vendor/taiwan_map.json` was pre-generated for exactly these
+   seven cities (see `tools/taiwan_map/`). Generalizing means either a
+   geocoding step that can turn an arbitrary place name into boundary data
+   on demand, or accepting that the map slide stays limited to whatever
+   regions have been pre-vendored - entity recognition and available-map-
+   data are two separate constraints, not one.
+3. **A confidence/fallback check.** An LLM asked "is this chart-worthy"
+   will sometimes be wrong in exactly the way a keyword match is currently
+   right for the wrong reason - a classification result needs the same
+   cheap sanity check that already exists downstream (did the callout step
+   actually resolve >= 2 real locations from asset data), not blind trust
+   in the model's tag.
+
+**Trade-off accepted for now:** shipping a hardcoded, honestly-labeled
+special case for one video beat shipping either nothing, or a half-built
+general classifier untested against more than one input. This is the one
+piece of the pipeline where "Gemini-assisted" is aspirational rather than
+actually implemented, and it's flagged as such rather than left to look
+more general than it is.
+
 ### Open items (still not decided)
 
-- None outstanding as of this update — this section exists so future
-  changes have somewhere to land rather than being silently absorbed into
-  "finished."
+- The map/chart-classification generalization above - a real scope of
+  work, not a quick fix, so it stays open rather than half-attempted.

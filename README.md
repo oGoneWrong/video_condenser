@@ -174,3 +174,12 @@ comparison; see [`runs/README.md`](runs/README.md) for the full history and
 what changed in each run. Everything under `runs/` is a snapshot copied out
 by hand after a render — re-running the pipeline never reads from or writes
 to that folder.
+
+**Validation scope, stated plainly:** every run in `runs/` is the same one
+video (`KjAI9r8tnOs`). Steps 1-4 are generic (any YouTube video with a
+transcript), but the optional map slide (`map_slide.py`) is not — its city
+list and metric keyword were read off this specific video's content, not
+built as general geo-entity recognition. See
+[`docs/DECISIONS.md`](docs/DECISIONS.md)'s "map slide is pattern-matching,
+not a general 'what's chart-worthy' decision" entry for exactly what's
+hardcoded and what a general version would need.
