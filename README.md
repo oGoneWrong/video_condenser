@@ -116,6 +116,7 @@ tools/heygen_avatar/      Manual, metered avatar-clip generator + its recovery s
 tools/taiwan_map/         One-time generator for render/vendor/taiwan_map.json
 render/                   HyperFrames project (compositions, vendored fonts/GSAP)
 runs/                     Frozen before/after snapshots of past renders (see runs/README.md)
+runs.jsonl                Append-only log of every build_video.py run (see below)
 docs/                     ARCHITECTURE.md, DECISIONS.md
 ```
 
@@ -123,6 +124,13 @@ Generated, per-video artifacts (`transcripts/`, `insights/`, `slides/`,
 `render/compositions/*.html`, `videos/*.mp4`, `avatar_clips/`) are gitignored —
 anyone cloning the repo regenerates them by running the pipeline on their own
 video, rather than pulling down someone else's rendered output.
+
+`runs.jsonl` is different from `runs/`: it's not a manually frozen snapshot,
+it's an automatic one-line-per-run log that `build_video.py` appends to on
+every successful composition build (timestamp, video id, how long the
+narration/composition step took, how many slides came out) — a lightweight,
+zero-effort record of every real run, independent of whether that run was
+also worth manually snapshotting into `runs/`.
 
 ## Cost & quota awareness
 

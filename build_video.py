@@ -1316,6 +1316,46 @@ def build_composition(identifier: str) -> str:
     return str(composition_path)
 
 
+def count_slides(html_text: str) -> int:
+    """
+    How many `class="...slide..."` elements a rendered composition HTML
+    contains. Pulled out of _log_run() as its own function purely so it's
+    unit-testable without needing a real composition file on disk - the
+    same technique used to verify run_6's "8 slides" stat by hand.
+    """
+    return len(re.findall(r'class="(?:[^"]*\s)?slide(?:\s[^"]*)?"', html_text))
+
+
+def _log_run(identifier: str, composition_path, elapsed_seconds: float) -> None:
+    """
+    Append one line to runs.jsonl recording this build_video.py run: when,
+    which video, how long the narration/composition step took, and how
+    many slides came out. This is intentionally zero-risk: it only reads
+    back the composition HTML build_composition() already wrote (rather
+    than changing build_composition()'s own signature or return value,
+    which nothing else in the repo calls, so there's no reason to touch
+    it) and counts `class="..slide.."` occurrences the same way run_6's
+    stats were verified by hand earlier in this project. A logging
+    failure here should never take down an otherwise-successful build, so
+    every step is wrapped and any problem is reported, not raised.
+    """
+    try:
+        html_text = Path(composition_path).read_text()
+        slide_count = count_slides(html_text)
+        entry = {
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "identifier": identifier,
+            "composition_path": str(composition_path),
+            "elapsed_seconds": round(elapsed_seconds, 1),
+            "slide_count": slide_count,
+        }
+        with open("runs.jsonl", "a") as f:
+            f.write(json.dumps(entry) + "\n")
+    except Exception as exc:
+        # Never let run-log bookkeeping fail an otherwise-successful build.
+        print(f"(run log not updated: {exc})")
+
+
 if __name__ == "__main__":
     if len(sys.argv) not in (2, 3):
         sys.exit("Usage: python build_video.py <identifier> [--slides-only]")
@@ -1338,8 +1378,10 @@ if __name__ == "__main__":
         # terminal with no sense of whether it's still working.
         start = time.perf_counter()
         composition_path = build_composition(identifier)
-        elapsed = format_elapsed(time.perf_counter() - start)
+        elapsed_seconds = time.perf_counter() - start
+        elapsed = format_elapsed(elapsed_seconds)
         print(f"Composition written to {composition_path} in {elapsed}.")
+        _log_run(identifier, composition_path, elapsed_seconds)
         print("Next: from inside render/, run:\n"
               "  npm run check\n"
               f"  time npx hyperframes render . -c compositions/{identifier}.html "

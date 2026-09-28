@@ -15,7 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from build_video import pack_by_height, AVAILABLE_HEIGHT  # noqa: E402
+from build_video import pack_by_height, count_slides, AVAILABLE_HEIGHT  # noqa: E402
 
 
 class PackByHeightTests(unittest.TestCase):
@@ -44,6 +44,26 @@ class PackByHeightTests(unittest.TestCase):
 
     def test_empty_input_returns_no_pages(self):
         self.assertEqual(pack_by_height([], lambda item: 1), [])
+
+
+class CountSlidesTests(unittest.TestCase):
+    def test_counts_each_slide_variant_once(self):
+        html = (
+            '<div class="slide facts-slide">a</div>'
+            '<div class="slide map-slide">b</div>'
+            '<div class="slide numbers-slide">c</div>'
+        )
+        self.assertEqual(count_slides(html), 3)
+
+    def test_ignores_non_slide_classes(self):
+        html = '<div class="slide-deck-wrapper"><div class="header">x</div></div>'
+        # "slide-deck-wrapper" doesn't contain the whole word "slide" on its
+        # own token boundary the way count_slides expects real slide divs
+        # to - this pins down that a wrapper class isn't miscounted as a slide.
+        self.assertEqual(count_slides(html), 0)
+
+    def test_empty_html_counts_zero(self):
+        self.assertEqual(count_slides(""), 0)
 
 
 if __name__ == "__main__":
