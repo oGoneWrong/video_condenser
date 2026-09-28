@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>KjAI9r8tnOs</title>
+<script src="vendor/gsap.min.js"></script>
+<style>
+@font-face {
+  font-family: "Space Grotesk";
+  font-weight: 400;
+  src: url("vendor/fonts/space-grotesk-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-weight: 600;
+  src: url("vendor/fonts/space-grotesk-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-weight: 700;
+  src: url("vendor/fonts/space-grotesk-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-weight: 400;
+  src: url("vendor/fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+
+:root {
+  --canvas: #fdfae7;
+  --ink: #111111;
+  --muted: #6b6b6b;
+  --cobalt: #1e2bfa;
+  --cobalt-tint: rgba(30, 43, 250, 0.04);
+  --cobalt-border: rgba(30, 43, 250, 0.20);
+}
+body { margin: 0; background: #000; }
+.slide {
+  width: 1080px;
+  height: 1920px;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-sizing: border-box;
+  padding: 90px;
+}
+.slide .title {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 72px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 0 0 80px 0;
+}
+.bullets { list-style: none; padding: 0; margin: 0; }
+.bullets li {
+  position: relative;
+  padding-left: 34px;
+  margin-bottom: 28px;
+  font-size: 44px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0.5em;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--cobalt);
+}
+.chart-blocks { margin-bottom: 40px; }
+.chart-block {
+  background: var(--cobalt-tint);
+  border: 1px solid var(--cobalt-border);
+  border-radius: 14px;
+  padding: 36px 40px;
+  margin-bottom: 32px;
+}
+.chart-row-label {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  fill: var(--ink);
+}
+.chart-row-value {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  fill: var(--cobalt);
+}
+.metric-value {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  font-size: 104px;
+  font-weight: 700;
+  color: var(--cobalt);
+  letter-spacing: -0.01em;
+}
+.metric-caption {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 32px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+.clip { position: absolute; inset: 0; }
+</style>
+</head>
+<body>
+<div id="stage" data-composition-id="KjAI9r8tnOs" data-start="0" data-width="1080" data-height="1920" data-duration="243.094">
+<div id="slide-01" class="clip" data-start="0.000" data-duration="39.147" data-track-index="0"><div class="slide facts-slide"><div class="title">THE FACTS (1/3)</div><ul class="bullets"><li id="bullet-01-0">Policy program: The Taiwanese government&#x27;s New Youth Housing Loan 2.0 (新青安 2.0) mortgage subsidy initiative.</li><li id="bullet-01-1">Reporting team: TVBS News journalists Yu Hsin-han and Liu Chun, reporting on housing markets in Taipei, Taichung, and Tainan.</li><li id="bullet-01-2">Interviewee (Mr. Su): A long-term renter in Taipei seeking a two-bedroom property within an NT$20 million budget.</li><li id="bullet-01-3">Mr. Su&#x27;s response: He avoids relying on the five-year grace period because post-grace monthly repayments would rise to several times his current rental expenses.</li></ul></div></div>
+<audio id="audio-01" class="clip" data-start="0.000" data-duration="39.147" data-track-index="1" src="KjAI9r8tnOs_audio/01_facts.wav"></audio>
+<div id="slide-02" class="clip" data-start="39.147" data-duration="19.136" data-track-index="0"><div class="slide facts-slide"><div class="title">THE FACTS (2/3)</div><ul class="bullets"><li id="bullet-02-0">Interviewee (Ms. Li): An independent interior designer who purchased a newly completed home to minimize remodeling outlays.</li><li id="bullet-02-1">Ms. Li&#x27;s response: She used the five-year grace period as financial runway for her business, but felt heavy mental strain when signing a 40-year mortgage commitment.</li></ul></div></div>
+<audio id="audio-02" class="clip" data-start="39.147" data-duration="19.136" data-track-index="1" src="KjAI9r8tnOs_audio/02_facts.wav"></audio>
+<div id="slide-03" class="clip" data-start="58.283" data-duration="32.555" data-track-index="0"><div class="slide facts-slide"><div class="title">THE FACTS (3/3)</div><ul class="bullets"><li id="bullet-03-0">Interviewee (Anping homebuyer family): A local family seeking a larger home in Tainan who found current prices restrictive compared to what similar funds bought a decade ago.</li><li id="bullet-03-1">Market development (Tainan agent): Real estate agents noted intense bidding wars in Anping District, including up to five buyers competing for a single listing in one month.</li><li id="bullet-03-2">Regional trend (Taichung): Peripheral areas lacking structural urban planning saw buyer interest collapse and prices drop after initial speculative surges.</li></ul></div></div>
+<audio id="audio-03" class="clip" data-start="58.283" data-duration="32.555" data-track-index="1" src="KjAI9r8tnOs_audio/03_facts.wav"></audio>
+<div id="slide-04" class="clip" data-start="90.838" data-duration="58.517" data-track-index="0"><div class="slide numbers-slide"><div class="title">BY THE NUMBERS (1/4)</div><div class="chart-blocks"><div class="chart-block"><svg viewBox="0 0 820 330" width="820" height="330"><text x="0" y="26" class="chart-row-label">Grace period monthly payment</text><rect x="0" y="44" width="175.0" height="36" rx="10" fill="var(--cobalt)"/><text x="195.0" y="72" class="chart-row-value">15,000 NT$/month</text><text x="0" y="136" class="chart-row-label">Post-grace monthly payment (35-year)</text><rect x="0" y="154" width="420.0" height="36" rx="10" fill="var(--cobalt)"/><text x="440.0" y="182" class="chart-row-value">36,000 NT$/month</text><text x="0" y="246" class="chart-row-label">Post-grace monthly payment (40-year)</text><rect x="0" y="264" width="373.3" height="36" rx="10" fill="var(--cobalt)"/><text x="393.3" y="292" class="chart-row-value">32,000 NT$/month</text></svg></div><div class="chart-block"><div class="metric-value">12.8%</div><div class="metric-caption">Anping existing home price growth</div></div><div class="chart-block"><div class="metric-value">60% of income</div><div class="metric-caption">Taipei mortgage burden ratio</div></div></div><ul class="bullets"><li id="bullet-04-0">Taipei secondhand home age threshold: Properties selling for under NT$20 million in Taipei typically average 40 years of age or older.</li></ul></div></div>
+<audio id="audio-04" class="clip" data-start="90.838" data-duration="58.517" data-track-index="1" src="KjAI9r8tnOs_audio/04_numbers.wav"></audio>
+<div id="slide-05" class="clip" data-start="149.355" data-duration="33.429" data-track-index="0"><div class="slide numbers-slide"><div class="title">BY THE NUMBERS (2/4)</div><div class="chart-blocks"></div><ul class="bullets"><li id="bullet-05-0">Taipei buyer rental tenure: Mr. Su lived in his central Taipei rental apartment for seven years before attempting to purchase a home.</li><li id="bullet-05-1">Five-year price surge in central and southern Taiwan: Housing prices across Hsinchu and central-southern regions more than doubled over a five-year period.</li><li id="bullet-05-2">Tainan Anping price increase per ping: New development pricing rose from NT$300,000–NT$350,000 per ping to more than NT$400,000 per ping under the policy.</li></ul></div></div>
+<audio id="audio-05" class="clip" data-start="149.355" data-duration="33.429" data-track-index="1" src="KjAI9r8tnOs_audio/05_numbers.wav"></audio>
+<div id="slide-06" class="clip" data-start="182.784" data-duration="38.763" data-track-index="0"><div class="slide numbers-slide"><div class="title">BY THE NUMBERS (3/4)</div><div class="chart-blocks"></div><ul class="bullets"><li id="bullet-06-0">Sample unit asking price in Anping: A renovated 32-ping apartment in Anping was listed at NT$23.8 million.</li><li id="bullet-06-1">Taichung prime district price levels: Prime areas reached NT$700,000 to NT$800,000 per ping, with top floors in Qiqi and Shuinan hitting NT$900,000 per ping.</li><li id="bullet-06-2">Taichung project push value drop: Overall market supply value in Taichung declined from nearly NT$580 billion in 2024 to around NT$410 billion in 2025.</li></ul></div></div>
+<audio id="audio-06" class="clip" data-start="182.784" data-duration="38.763" data-track-index="1" src="KjAI9r8tnOs_audio/06_numbers.wav"></audio>
+<div id="slide-07" class="clip" data-start="221.547" data-duration="21.547" data-track-index="0"><div class="slide numbers-slide"><div class="title">BY THE NUMBERS (4/4)</div><div class="chart-blocks"></div><ul class="bullets"><li id="bullet-07-0">Taichung outer district annual price drop: Areas lacking development drivers experienced annual price declines between 3% and 5%.</li><li id="bullet-07-1">Central and southern Taiwan mortgage burden ratio: Mortgage payments exceed 40% of income in major central and southern municipalities, nearing 45% in Taichung.</li></ul></div></div>
+<audio id="audio-07" class="clip" data-start="221.547" data-duration="21.547" data-track-index="1" src="KjAI9r8tnOs_audio/07_numbers.wav"></audio>
+</div>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  window.__timelines["KjAI9r8tnOs"] = tl;
+  tl.set(["#bullet-01-0", "#bullet-01-1", "#bullet-01-2", "#bullet-01-3"], {opacity: 0.45, color: "#6b6b6b"}, 0.0);
+  tl.set("#bullet-01-0", {opacity: 1, color: "#111111"}, 0.0);
+  tl.to("#bullet-01-0", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 10.965);
+  tl.to("#bullet-01-1", {opacity: 1, color: "#111111", duration: 0.3}, 10.965);
+  tl.to("#bullet-01-1", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 19.84);
+  tl.to("#bullet-01-2", {opacity: 1, color: "#111111", duration: 0.3}, 19.84);
+  tl.to("#bullet-01-2", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 28.331);
+  tl.to("#bullet-01-3", {opacity: 1, color: "#111111", duration: 0.3}, 28.331);
+  tl.set(["#bullet-02-0", "#bullet-02-1"], {opacity: 0.45, color: "#6b6b6b"}, 39.147);
+  tl.set("#bullet-02-0", {opacity: 1, color: "#111111"}, 39.147);
+  tl.to("#bullet-02-0", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 47.595);
+  tl.to("#bullet-02-1", {opacity: 1, color: "#111111", duration: 0.3}, 47.595);
+  tl.set(["#bullet-03-0", "#bullet-03-1", "#bullet-03-2"], {opacity: 0.45, color: "#6b6b6b"}, 58.283);
+  tl.set("#bullet-03-0", {opacity: 1, color: "#111111"}, 58.283);
+  tl.to("#bullet-03-0", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 69.312);
+  tl.to("#bullet-03-1", {opacity: 1, color: "#111111", duration: 0.3}, 69.312);
+  tl.to("#bullet-03-1", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 80.704);
+  tl.to("#bullet-03-2", {opacity: 1, color: "#111111", duration: 0.3}, 80.704);
+  tl.set(["#bullet-04-0"], {opacity: 0.45, color: "#6b6b6b"}, 90.838);
+  tl.to("#bullet-04-0", {opacity: 1, color: "#111111", duration: 0.3}, 139.563);
+  tl.set(["#bullet-05-0", "#bullet-05-1", "#bullet-05-2"], {opacity: 0.45, color: "#6b6b6b"}, 149.355);
+  tl.set("#bullet-05-0", {opacity: 1, color: "#111111"}, 149.355);
+  tl.to("#bullet-05-0", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 158.08);
+  tl.to("#bullet-05-1", {opacity: 1, color: "#111111", duration: 0.3}, 158.08);
+  tl.to("#bullet-05-1", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 168.235);
+  tl.to("#bullet-05-2", {opacity: 1, color: "#111111", duration: 0.3}, 168.235);
+  tl.set(["#bullet-06-0", "#bullet-06-1", "#bullet-06-2"], {opacity: 0.45, color: "#6b6b6b"}, 182.784);
+  tl.set("#bullet-06-0", {opacity: 1, color: "#111111"}, 182.784);
+  tl.to("#bullet-06-0", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 191.573);
+  tl.to("#bullet-06-1", {opacity: 1, color: "#111111", duration: 0.3}, 191.573);
+  tl.to("#bullet-06-1", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 206.122);
+  tl.to("#bullet-06-2", {opacity: 1, color: "#111111", duration: 0.3}, 206.122);
+  tl.set(["#bullet-07-0", "#bullet-07-1"], {opacity: 0.45, color: "#6b6b6b"}, 221.547);
+  tl.set("#bullet-07-0", {opacity: 1, color: "#111111"}, 221.547);
+  tl.to("#bullet-07-0", {opacity: 0.45, color: "#6b6b6b", duration: 0.3}, 231.168);
+  tl.to("#bullet-07-1", {opacity: 1, color: "#111111", duration: 0.3}, 231.168);
+</script>
+</body>
+</html>

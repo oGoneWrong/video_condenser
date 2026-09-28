@@ -1,0 +1,22 @@
+# Aggregated from each stage's own docstring (still the source of truth -
+# if a stage's dependencies change, update its docstring first, then this
+# file, so the two never silently drift apart).
+#
+# Install: pip install -r requirements.txt --break-system-packages
+
+# Step 1 - youtube_transcript.py (YouTube captions + audio-extraction fallback)
+youtube-transcript-api
+yt-dlp
+
+# Step 2 - transcribe_audio.py (AssemblyAI ASR fallback)
+assemblyai
+
+# Step 3 / 3.5 - extract_insights.py, slide_planner.py (Google Gemini, free tier)
+google-genai
+
+# Step 4 - build_video.py (local Kokoro-82M TTS support)
+kokoro-onnx
+soundfile
+
+# Shared - Steps 2/3/4 all read ASSEMBLYAI_API_KEY / GEMINI_API_KEY from .env
+python-dotenv
