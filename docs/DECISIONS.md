@@ -124,8 +124,14 @@ is "negligible," not "another account to create."
 **Why Step 3.5 fails soft but Step 3 doesn't:** Step 3.5 (grouping/charting)
 is a refinement of output that already exists in a usable deterministic
 form — the regex/pagination path. Step 3 (extraction) has no substitute; if
-it fails, there's no fallback insights source, so a missing key there is a
-hard stop rather than a silent degrade.
+it fails for a real content reason (bad key, malformed response), there's
+no fallback insights source, so that's a hard stop rather than a silent
+degrade. **Update, 2026-09-28:** this used to also mean Step 3 had zero
+resilience to a *transient* failure — a Gemini 503 there crashed with an
+uncaught traceback the first time `run_pipeline.py` was actually run
+end-to-end against a second test video. See the new entry below
+("Step 3 gets retries too...") for what changed and why it stops short of
+matching Step 3.5's fallback depth.
 
 **Trade-off accepted:** two Gemini calls per video instead of one, and a
 class of bug that's easy to miss — a call that *degrades* instead of
@@ -133,6 +139,85 @@ failing loudly (regex fallback instead of an error) can look like success
 while quietly producing a worse deck. Mitigated by logging which path was
 taken (`"... responded - slide layout ready."` vs `"... handing off to the
 regex-based layout instead."`) rather than making the fallback silent.
+
+---
+
+### Step 3 gets retries too, but a shorter model cascade than Step 3.5 — checked against benchmarks, not assumed
+
+**Context:** the entry above notes Step 3 (`extract_insights.py`) had no
+resilience to a transient failure, unlike Step 3.5's retry+fallback
+cascade. That gap was theoretical until it wasn't — running
+`run_pipeline.py` end to end against a second test video hit a real
+`google.genai.errors.ServerError: 503 UNAVAILABLE` ("this model is
+currently experiencing high demand") on the Step 3 call, which crashed
+with an uncaught traceback instead of retrying.
+
+**Decision:** give `extract_insights.py` the same retry-with-backoff
+mechanism `slide_planner.py` already has (`_is_retryable`, exponential
+backoff, escalate to the next model after `MAX_RETRIES_PER_MODEL`
+attempts) — but cascade through only 3 models, not 4:
+`gemini-3.8-flash → 3.7-flash → 3.6-flash`, stopping short of
+`3.5-flash-lite`.
+
+**Alternatives considered:**
+1. *Mirror `slide_planner.py`'s cascade exactly (all 4 models, down to
+   Flash-Lite).* Rejected — see reasoning below.
+2. *A second, different LLM provider as the fallback.* Rejected outright:
+   contradicts the "one free-tier key, no second provider, no extra
+   signup" constraint already established for both Gemini call sites in
+   this project (see "Gemini for insight extraction and slide planning,
+   with a hard fallback," above). A second provider also wouldn't
+   meaningfully reduce risk here — a broad Gemini-side outage would
+   likely correlate across models more than a single provider swap
+   would fix, and it adds a real cost (a second API key/signup) for a
+   marginal reliability gain on a portfolio project.
+3. *No retry at all, keep Step 3 as a hard stop on any failure.*
+   Rejected — leaves the exact gap that just caused a real crash, and is
+   inconsistent with Step 3.5 having resilience right next to it.
+
+**Why stop at 3 models instead of 4, specifically:** checked Google's own
+published GDPVal-AA v2 benchmark (a professional-knowledge/reasoning Elo
+score, the closest apples-to-apples metric available across generations,
+and more relevant to a writing task than the SWE-Bench/Terminal-bench
+numbers Google also publishes, which are coding/agentic-specific) rather
+than assuming "newest is smartest, keep going" the way `slide_planner.py`'s
+docstring originally did:
+
+| Model | GDPVal-AA v2 (Elo) | Step down |
+|---|---|---|
+| Gemini 3.8 Flash | 1545 | — |
+| Gemini 3.7 Flash | 1482 | −63 (~4%) |
+| Gemini 3.6 Flash | 1421 | −61 (~4%) |
+| Gemini 3.5 Flash-Lite | *(no Elo published)* — Artificial Analysis' general Intelligence Index puts it at ~22 vs. ~40 for 3.8 Flash | a much bigger drop |
+
+`3.8 → 3.7 → 3.6 Flash` step down gradually and consistently (~4% each) —
+the same "Flash" tier, successive generations. `3.6 Flash → 3.5
+Flash-Lite` isn't a step, it's a cliff: "Lite" is a genuinely
+smaller/cheaper model class, not just an older generation, and the
+Intelligence Index gap (roughly halved) reflects that.
+
+**Why the cliff matters more here than in Step 3.5:** Step 3.5's own
+fallback, if every model in its cascade fails, is deterministic regex
+grouping — a non-LLM safety net that doesn't much care if the upstream
+grouping decision came from a slightly weaker model. Step 3's output
+**is** the deliverable text — the actual journalistic rewrite that gets
+narrated in the video — and has no equivalent non-LLM fallback. Falling
+through to Flash-Lite before giving up would mean the rewrite was quietly
+written by a meaningfully weaker model, with nothing downstream catching
+a resulting quality drop the way Step 3.5's regex fallback catches a bad
+grouping decision.
+
+**Trade-off accepted:** if all three same-tier Flash models are genuinely
+unavailable (a broad, sustained outage, not just one model's demand
+spike), Step 3 now raises a real, reportable failure instead of either
+crashing uncaught (the old behavior) or silently degrading to a weaker
+model's rewrite (the rejected alternative). That's a deliberately narrower
+safety net than Step 3.5's — treated as the right trade-off given Step 3's
+output is user-facing content, not an internal layout decision.
+
+**Sources checked:** [Gemini 3.8 Flash Benchmarks Explained (Vellum)](https://www.vellum.ai/blog/gemini-3-8-flash-benchmarks-explained),
+[Gemini 3.6 Flash / 3.5 Flash-Lite (DataCamp)](https://www.datacamp.com/blog/gemini-3-6-flash-3-5-flash-lite-3-5-flash-cyber),
+[Gemini 3.8 Flash — Artificial Analysis](https://artificialanalysis.ai/models/releases/gemini-3-8-flash).
 
 ---
 

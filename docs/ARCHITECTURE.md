@@ -55,10 +55,9 @@ committed template).
 
 **Input:** `transcripts/<id>.txt`. **Output:** `insights/<id>.txt`.
 
-Calls Gemini (`models/gemini-3.8-flash`, free tier — chosen specifically
-because Anthropic's Console API is prepaid-credits-only and this needed a
-truly free option) with a fixed extraction prompt that produces exactly two
-sections:
+Calls Gemini (free tier — chosen specifically because Anthropic's Console
+API is prepaid-credits-only and this needed a truly free option) with a
+fixed extraction prompt that produces exactly two sections:
 
 - **FACTS** — who/what/when, one fact per line as `Label: value`.
 - **NUMBERS & CONTEXT** — figures actually stated in the transcript, *plus*
@@ -79,6 +78,37 @@ words or shape. This also happens to be the exact shape Step 4 needs:
 discrete, ranked, one-idea-per-line points, not flowing prose.
 
 Requires `GEMINI_API_KEY` (same `.env` as Step 2).
+
+**Retries + same-tier model fallback (added after a real 503 crash).**
+While testing `run_pipeline.py` end to end, a genuine Gemini 503 ("this
+model is currently experiencing high demand") crashed this step with an
+uncaught traceback — it had no retry or fallback logic at all, unlike
+Step 3.5 below. Now it cascades through `EXTRACTION_MODELS`
+(`gemini-3.8-flash` → `3.7-flash` → `3.6-flash`), retrying a 503/429 on
+the current model a few times with exponential backoff before moving to
+the next, mirroring Step 3.5's mechanism (kept as a separate copy in
+`extract_insights.py` rather than a shared import, so each stage script
+still runs standalone).
+
+One deliberate difference from Step 3.5's cascade: it stops at
+`3.6-flash` and does **not** fall through to `3.5-flash-lite` the way
+Step 3.5 does. Checked against Google's own published GDPVal-AA v2
+benchmark (a professional-knowledge/reasoning Elo score): `3.8 → 3.7 →
+3.6 Flash` step down gradually and consistently (~4% each, 1545 → 1482 →
+1421 Elo) — same tier, successive generations. `3.6 Flash → 3.5
+Flash-Lite` isn't a step, it's a cliff (Flash-Lite's general Intelligence
+Index is roughly half of 3.8 Flash's) — a genuinely smaller/cheaper model
+class, not just an older one. That distinction matters more here than in
+Step 3.5: Step 3.5's own fallback, if every model fails, is deterministic
+regex grouping — a non-LLM safety net that doesn't care much if the
+upstream decision was made by a slightly weaker model. This step's output
+**is** the deliverable text (the journalistic rewrite itself) with no
+equivalent non-LLM fallback, so a quiet fall-through to a meaningfully
+weaker model would mean nothing catches a resulting drop in write
+quality. Running out of same-tier Flash models is instead treated as a
+real, reportable failure (raised to the caller) rather than silently
+degrading what gets narrated in the video. Any non-retryable error (bad
+key, malformed response) is still raised immediately, same as Step 3.5.
 
 ## Step 3.5 — Slide planning ([`slide_planner.py`](../slide_planner.py))
 
