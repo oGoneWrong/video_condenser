@@ -85,7 +85,10 @@ cp .env.example .env
 #   ASSEMBLYAI_API_KEY  - https://www.assemblyai.com/ (free signup)
 #   GEMINI_API_KEY      - https://aistudio.google.com/apikey (free tier, no card)
 
-# 3. Run the pipeline stage by stage, by video ID / identifier
+# 3. Run all three stages at once...
+python3 run_pipeline.py "https://youtube.com/watch?v=<id>"
+#    ...or run them one at a time, by video ID / identifier, when you
+#    want to inspect an intermediate file before moving on:
 python3 youtube_transcript.py "https://youtube.com/watch?v=<id>"
 python3 extract_insights.py <id>
 python3 build_video.py <id>
